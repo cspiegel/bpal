@@ -1,0 +1,5 @@
+language = "C++"
+pragma_once = false
+tab_width = 4
+documentation_style = "C++"
+# cpp_compat = true
