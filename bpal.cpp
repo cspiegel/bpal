@@ -176,7 +176,7 @@ static BlorbData load_blorb_data(const std::string &filename)
 {
     BlorbData blorb_data;
 
-    std::ifstream file(filename);
+    std::ifstream file(filename, std::ios::binary);
     file.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
 
     auto read32 = [&file]() -> std::uint32_t {
@@ -307,7 +307,7 @@ static BlorbData load_blorb_data(const std::string &filename)
 
 static void write_blorb(const std::string &filename, const BlorbData &blorb_data)
 {
-    std::ofstream file(filename);
+    std::ofstream file(filename, std::ios::binary);
     file.exceptions(std::ofstream::badbit | std::ofstream::failbit | std::ofstream::eofbit);
 
     auto write32 = [&file](std::uint32_t n) {
