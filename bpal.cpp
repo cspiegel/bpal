@@ -47,6 +47,7 @@ struct BPalEntry {
 struct BlorbData {
     std::uint32_t size = 0;
     std::vector<Chunk> chunks;
+    std::optional<std::vector<std::uint8_t>> exec;
     std::map<std::uint32_t, Chunk> picts;
     std::vector<BPalEntry> bpal;
 };
@@ -318,13 +319,23 @@ static void write_blorb(const std::string &filename, const BlorbData &blorb_data
     };
 
     file << "FORM....IFRSRIdx";
-    write32(4 + (blorb_data.picts.size() * 12));
-    write32(blorb_data.picts.size());
+    std::uint32_t ridx_size = blorb_data.picts.size();
+    if (blorb_data.exec.has_value()) {
+        ridx_size++;
+    }
+    write32(4 + (ridx_size * 12));
+    write32(ridx_size);
 
     for (const auto &[id, _] : blorb_data.picts) {
         file << "Pict";
         write32(id);
         write32(0); // placeholder
+    }
+
+    if (blorb_data.exec.has_value()) {
+        file << "Exec";
+        write32(0);
+        write32(0);
     }
 
     auto write_chunk = [&file, &write32](const Chunk &chunk) {
@@ -344,6 +355,11 @@ static void write_blorb(const std::string &filename, const BlorbData &blorb_data
     for (const auto &[_, chunk] : blorb_data.picts) {
         offsets.push_back(file.tellp());
         write_chunk(chunk);
+    }
+
+    if (blorb_data.exec.has_value()) {
+        offsets.push_back(file.tellp());
+        write_chunk(Chunk{TypeID("ZCOD"), *blorb_data.exec});
     }
 
     if (blorb_data.bpal.empty()) {
@@ -372,13 +388,23 @@ static void write_blorb(const std::string &filename, const BlorbData &blorb_data
 
 int main(int argc, char **argv)
 {
-    if (argc != 2) {
-        std::cerr << "usage: bpal blorb.blb\n";
+    if (argc != 2 && argc != 3) {
+        std::cerr << "usage: bpal blorb.blb [story.z6]\n";
         std::exit(1);
+    }
+
+    std::optional<std::vector<std::uint8_t>> exec;
+
+    if (argc == 3) {
+        std::ifstream file(argv[2], std::ios::binary);
+        file.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
+        exec.emplace();
+        exec->assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     }
 
     try {
         auto blorb_data = load_blorb_data(argv[1]);
+        blorb_data.exec = exec;
         write_blorb("out.blb", blorb_data);
     } catch (const Error &e) {
         std::cerr << "error: " << e.what() << std::endl;

@@ -31,3 +31,8 @@ To run:
     ./bpal /path/to/blorb.blb
 
 This will process the Blorb file and generate a file called `out.blb`.
+
+You can also pass a Z-machine story file to bundle into the Blorb as an Exec
+resource:
+
+    ./bpal /path/to/blorb.blb /path/to/story.z6
