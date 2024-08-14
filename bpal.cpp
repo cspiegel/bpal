@@ -396,10 +396,15 @@ int main(int argc, char **argv)
     std::optional<std::vector<std::uint8_t>> exec;
 
     if (argc == 3) {
-        std::ifstream file(argv[2], std::ios::binary);
-        file.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
-        exec.emplace();
-        exec->assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        try {
+            std::ifstream file(argv[2], std::ios::binary);
+            file.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
+            exec.emplace();
+            exec->assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        } catch (const std::ios_base::failure &e) {
+            std::cerr << std::format("error processing {}: {}\n", argv[2], e.code().message());
+            std::exit(1);
+        }
     }
 
     try {
@@ -408,6 +413,9 @@ int main(int argc, char **argv)
         write_blorb("out.blb", blorb_data);
     } catch (const Error &e) {
         std::cerr << "error: " << e.what() << std::endl;
+        std::exit(1);
+    } catch (const std::ios_base::failure &e) {
+        std::cerr << std::format("error processing {}: {}\n", argv[1], e.code().message());
         std::exit(1);
     }
 
