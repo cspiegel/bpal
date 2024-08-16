@@ -62,7 +62,10 @@ static constexpr std::uint32_t be32(std::uint32_t a, std::uint32_t b, std::uint3
 
 static constexpr std::uint32_t TypeID(const char (&id)[5])
 {
-    return be32(id[0], id[1], id[2], id[3]);
+    return be32(static_cast<unsigned char>(id[0]),
+                static_cast<unsigned char>(id[1]),
+                static_cast<unsigned char>(id[2]),
+                static_cast<unsigned char>(id[3]));
 }
 
 static std::string idstr(std::uint32_t id)
