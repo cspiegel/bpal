@@ -45,7 +45,6 @@ struct BPalEntry {
 };
 
 struct BlorbData {
-    std::uint32_t size = 0;
     std::vector<Chunk> chunks;
     std::optional<std::vector<unsigned char>> exec;
     std::map<std::uint32_t, Chunk> picts;
@@ -196,7 +195,7 @@ static BlorbData load_blorb_data(const std::string &filename)
         throw Error("not a blorb");
     }
 
-    blorb_data.size = read32();
+    auto size = read32();
 
     if (read32() != TypeID("IFRS") || read32() != TypeID("RIdx")) {
         throw Error("not a blorb");
@@ -232,7 +231,7 @@ static BlorbData load_blorb_data(const std::string &filename)
         }
     }
 
-    while (file.tellg() < blorb_data.size + 8) {
+    while (file.tellg() < size + 8) {
         std::streamoff pos = file.tellg();
         auto chunktype = read32();
 
