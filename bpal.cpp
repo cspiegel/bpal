@@ -402,8 +402,7 @@ int main(int argc, char **argv)
         try {
             std::ifstream file(argv[2], std::ios::binary);
             file.exceptions(std::ifstream::badbit | std::ifstream::failbit | std::ifstream::eofbit);
-            exec.emplace();
-            exec->assign((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            exec.emplace(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
         } catch (const std::ios_base::failure &e) {
             std::cerr << std::format("error processing {}: {}\n", argv[2], e.code().message());
             std::exit(1);
