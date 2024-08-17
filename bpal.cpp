@@ -47,7 +47,7 @@ struct BPalEntry {
 struct BlorbData {
     std::uint32_t size = 0;
     std::vector<Chunk> chunks;
-    std::optional<std::vector<std::uint8_t>> exec;
+    std::optional<std::vector<unsigned char>> exec;
     std::map<std::uint32_t, Chunk> picts;
     std::vector<BPalEntry> bpal;
 };
@@ -396,7 +396,7 @@ int main(int argc, char **argv)
         std::exit(1);
     }
 
-    std::optional<std::vector<std::uint8_t>> exec;
+    std::optional<std::vector<unsigned char>> exec;
 
     if (argc == 3) {
         try {
