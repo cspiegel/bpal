@@ -221,7 +221,7 @@ static BlorbData load_blorb_data(const std::string &filename)
         auto start = read32();
 
         if (usage != TypeID("Pict")) {
-            throw Error(std::format("unknown resource usage: {:x} ({})", usage, idstr(usage)));
+            throw Error(std::format("unknown resource usage: {:08x} ({})", usage, idstr(usage)));
         }
 
         converted_id = std::max(converted_id, number + 1);
@@ -253,14 +253,14 @@ static BlorbData load_blorb_data(const std::string &filename)
                 auto id = ids.at(pos);
                 blorb_data.picts.emplace(id, Chunk{chunktype, std::move(chunk)});
             } catch (const std::out_of_range &) {
-                throw Error(std::format("found {:x} ({}) chunk at offset {:x}, but no RIdx entries reference it", chunktype, idstr(chunktype), pos));
+                throw Error(std::format("found {:08x} ({}) chunk at offset {:x}, but no RIdx entries reference it", chunktype, idstr(chunktype), pos));
             }
             break;
         }
         case TypeID("BPal"):
             throw Error("this file already has a BPal chunk");
         default:
-            throw Error(std::format("unknown chunk: {:x} ({}) @{:x}", chunktype, idstr(chunktype), pos));
+            throw Error(std::format("unknown chunk: {:08x} ({}) @{:x}", chunktype, idstr(chunktype), pos));
         }
     }
 
