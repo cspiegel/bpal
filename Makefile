@@ -1,7 +1,8 @@
 all: bpal
 
-CXXFLAGS=	-g -O -Wall -std=c++23
-LIBS=		$(shell pkg-config Qt6Gui Qt6Core --cflags --libs)
+PKG=		Qt6Gui Qt6Core
+CXXFLAGS=	-g -O -Wall -std=c++23 $(shell pkg-config $(PKG) --cflags)
+LIBS=		$(shell pkg-config $(PKG) --libs)
 
 ifndef NO_LIBOXI
     CXXFLAGS+=	-DLIBOXI -Ioxi
