@@ -52,20 +52,17 @@ struct BlorbData {
     std::vector<BPalEntry> bpal;
 };
 
-static constexpr std::uint32_t be32(std::uint32_t a, std::uint32_t b, std::uint32_t c, std::uint32_t d)
+static constexpr std::uint32_t be32(unsigned char a, unsigned char b, unsigned char c, unsigned char d)
 {
-    return (a << 24) |
-           (b << 16) |
-           (c <<  8) |
-           (d <<  0);
+    return (static_cast<std::uint32_t>(a) << 24) |
+           (static_cast<std::uint32_t>(b) << 16) |
+           (static_cast<std::uint32_t>(c) <<  8) |
+           (static_cast<std::uint32_t>(d) <<  0);
 }
 
 static constexpr std::uint32_t TypeID(const char (&id)[5])
 {
-    return be32(static_cast<unsigned char>(id[0]),
-                static_cast<unsigned char>(id[1]),
-                static_cast<unsigned char>(id[2]),
-                static_cast<unsigned char>(id[3]));
+    return be32(id[0], id[1], id[2], id[3]);
 }
 
 static std::string idstr(std::uint32_t id)
