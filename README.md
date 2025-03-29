@@ -1,5 +1,7 @@
 # BPal - Add BPal entries to Blorb files
 
+NOTE: This program has been obsoleted by [Snavig](https://github.com/cspiegel/snavig/).
+
 This program generates Blorb files with BPal chunks (see [Blorb.md](Blorb.md)),
 so that the adaptive palettes of Zork Zero and Arthur can be used with Glk-based
 interpreters. Generated Blorb files are backward compatible: they contain all
